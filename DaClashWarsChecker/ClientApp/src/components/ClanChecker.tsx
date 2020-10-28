@@ -12,32 +12,45 @@ type ClanCheckerProps =
 
 class ClanChecker extends React.PureComponent<ClanCheckerProps> {
 
+    state = {
+        clanTag: ""
+    }
+
+    public componentDidMount() {
+        this.handleChange.bind(this);
+    }
     public componentDidUpdate() {
         this.fetchNewData();
     }
 
+    private handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({ clanTag: ev.target.value });
+    }
+
     public render() {
+
         return (
             <React.Fragment>
                 <h1>Your Clan stats!</h1>
-
+                <input type="textbox" name="clashTag" placeholder="Introduce clash tag.... #1L23KO" onChange={this.handleChange.bind(this)} />
                 <button type="button"
                         className="btn btn-primary btn-lg"
-                        onClick={() => { this.props.fetchList("123"); }}>
+                        onClick={() => { this.props.fetchList(this.state.clanTag); }}>
                     Get list
                 </button>
                 {this.renderFetchedData()}
             </React.Fragment>
         );
     }
-
+    
     private fetchNewData() {
         this.props.fetchList(this.props.match.params.clanTag);
     }
 
     private renderFetchedData() {
         return (
-            this.props.members && (<table className="table table-striped" aria-labelledby="tabelLabel">
+            this.props.members && this.props.members.length > 0 &&
+            (<table className="table table-striped" aria-labelledby="tabelLabel">
                 <thead>
                     <tr>
                         <th>Name</th>

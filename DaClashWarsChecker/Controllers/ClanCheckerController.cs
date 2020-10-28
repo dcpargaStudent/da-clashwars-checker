@@ -18,16 +18,16 @@ namespace DaClashWarsChecker.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<MemberData> Get()
+        public IEnumerable<MemberData> Get(string clanTag)
         {
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new MemberData()
+            return !string.IsNullOrWhiteSpace(clanTag) ? Enumerable.Range(1, 5).Select(index => new MemberData
             {
                 Name = $"Player_{index}",
                 DonationsGive = rng.Next(0, 200),
                 DonationsReceived = rng.Next(0, 2000),
                 Fame = rng.Next(0, 4000)
-            });
+            }) : Enumerable.Empty<MemberData>();
         }
     }
 }

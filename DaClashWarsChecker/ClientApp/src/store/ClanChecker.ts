@@ -34,16 +34,18 @@ type KnownAction = FetchClanDataAction | FetchedClanDataAction;
 export const actionCreators = {
     fetchList: (clanTag: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
+        const clanTagEncoded = encodeURIComponent(clanTag);
         if (appState && appState.clanChecker && clanTag) {
-            fetch(`clanchecker`)
+            fetch(`clanchecker?clanTag=${clanTagEncoded}`)
                 .then(response => response.json() as Promise<MemberData[]>)
                 .then(data => {
                     dispatch({ type: 'FETCHED_CLAN_DATA', clanTag: clanTag, members: data });
                 });
 
-            dispatch({ type: 'FETCH_CLAN_DATA', clanTag: clanTag});
+            dispatch({ type: 'FETCH_CLAN_DATA', clanTag: clanTag });
         }
-    }
+    },
+    setClanTag: (clanTag: string) => ({ clanTag: clanTag }) 
 };
 
 const emptyClanInfo: ClanCheckerState = { isLoading: false, members: [], clanTag: "" };
@@ -64,7 +66,7 @@ export const reducer: Reducer<ClanCheckerState> = (state: ClanCheckerState | und
             //Here is where we should check if the incoming data is valid (weather checks the startDateIndex)
             return {
                 isLoading: false,
-                members: state.members,
+                members: action.members,
                 clanTag: action.clanTag
             }
 
